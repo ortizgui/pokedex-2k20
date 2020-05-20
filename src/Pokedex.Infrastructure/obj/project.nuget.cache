@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "HBgoZRFHb8rjk9+55jHps7ynwnqmq1XZURq5IBYuzkv54XENf/B2F2dnGaLMt08QYj1Q1M/Qo1ouVs9R2z14Pg==",
+  "success": true,
+  "projectFilePath": "D:\\_Workspaces\\GIT\\pokedex-2k20\\src\\Pokedex.Infrastructure\\Pokedex.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\guilh\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\guilh\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
