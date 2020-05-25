@@ -1,7 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="8.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.JSON" Version="12.0.3" />
+    <PackageReference Include="RestSharp" Version="106.11.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Pokedex.Domain\Pokedex.Domain.csproj" />
+  </ItemGroup>
 
 </Project>
