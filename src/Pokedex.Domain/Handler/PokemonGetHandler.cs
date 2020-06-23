@@ -1,27 +1,37 @@
 ﻿using Pokedex.Domain.Commands;
 using Pokedex.Domain.Entities;
-using Pokedex.Domain.ExternalServices;
 using MediatR;
 using System.Threading.Tasks;
 using System.Threading;
-using Mapster;
+using Pokedex.Domain.Services.PokemonServices;
+using Pokedex.Domain.Dtos.Pokemon;
 
 namespace Pokedex.Domain.Handler
 {
-    public class PokemonGetHandler : IRequestHandler<PokemonGetByNumberCommand, ServiceResponse<PokemonEntity>>
+    public class PokemonGetHandler : IRequestHandler<PokemonGetByNumberCommand, ServiceResponse<GetPokemonDto>>
     {
-        private readonly IMediator _mediator;
-        private readonly IPokemonExternalService _pokemonExternalService;
+        private readonly IPokemonService _pokemonService;
 
-        public PokemonGetHandler(IMediator mediator, IPokemonExternalService pokemonExternalService)
+        public PokemonGetHandler(IPokemonService pokemonService)
         {
-            _mediator = mediator;
-            _pokemonExternalService = pokemonExternalService;
+            _pokemonService = pokemonService;
         }
 
-        public async Task<ServiceResponse<PokemonEntity>> Handle(PokemonGetByNumberCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<GetPokemonDto>> Handle(PokemonGetByNumberCommand request, CancellationToken cancellationToken)
         { 
-            return await _pokemonExternalService.GetPokemonByNumber(request.Number);
+            ServiceResponse<GetPokemonDto> serviceResponse = new ServiceResponse<GetPokemonDto>();
+
+            var pokemonDto = await _pokemonService.BuildPokemonByNumber(request.Number);
+
+            serviceResponse.Data = pokemonDto;
+
+            if (pokemonDto == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Sorry, we can't find any info about that pokemon.";
+            }
+
+            return serviceResponse;
         }
     }
 }

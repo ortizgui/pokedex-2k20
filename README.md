@@ -19,6 +19,7 @@ External API: [PokéAPI](https://pokeapi.co/).
 * Mapster
 * Restsharp
 * Newtonsoft.JSON
+* Microsoft.EntityFrameworkCore.SqlServer
 
 ## Running the project locally
 

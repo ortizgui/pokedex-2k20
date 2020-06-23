@@ -17,12 +17,11 @@ namespace Pokedex.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{pokemonNumber}")]
-        public async Task<IActionResult> GetPokemonByNumber(string pokemonNumber)
+        [HttpGet("{Number}")]
+        public async Task<IActionResult> GetPokemonByNumber([FromRoute]PokemonGetByNumberCommand command)
         {
-            var command = new PokemonGetByNumberCommand { Number = Int32.Parse(pokemonNumber) };
-            var serviceResponse = _mediator.Send(command);
-            return Ok(serviceResponse.Result);
+            var serviceResponse = await _mediator.Send(command);
+            return Ok(serviceResponse);
         }
     }
 }

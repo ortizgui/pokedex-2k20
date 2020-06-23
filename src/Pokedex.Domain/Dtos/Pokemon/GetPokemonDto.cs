@@ -1,9 +1,10 @@
-using System;
 using System.Collections.Generic;
+using Pokedex.Domain.Dtos.Type;
+using Pokedex.Domain.Entities;
 
-namespace Pokedex.Domain.Entities
+namespace Pokedex.Domain.Dtos.Pokemon
 {
-    public class PokemonEntity
+    public class GetPokemonDto
     {
         public int Id { get; set; }
         public int Number { get; set; }
@@ -11,8 +12,6 @@ namespace Pokedex.Domain.Entities
         public int Order { get; set; }
         public int Height { get; set; }
         public int Weight { get; set; }
-        public DateTime DateCreated { get; set; } = DateTime.Now;
-        public DateTime? DateUpdated { get; set; } = null;
-        public List<PokemonTypeEntity> PokemonTypes { get; set; }
+        public List<TypesEntity> Types { get; set; }
     }
 }
