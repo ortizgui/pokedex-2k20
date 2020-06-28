@@ -5,10 +5,10 @@ namespace Pokedex.Domain.Repositories
 {
     public interface IPokemonRepository
     {
-        GetPokemonDto GetPokemonByID(int pokemonId);
-        GetPokemonDto GetPokemonByName(string pokemonName);
-        Task InsertPokemonAsync(AddPokemonDto pokemonDto);  
-        void DeletePokemon(int pokemonId);        
-        void UpdatePokemon(UpdatePokemonDto pokemon);  
+        Task<GetPokemonDto> GetPokemonByNumber(int pokemonId);
+        Task<GetPokemonDto> GetPokemonByName(string pokemonName);
+        Task InsertPokemonAsync(AddPokemonDto pokemonDto);
+        Task DeletePokemon(int pokemonId);
+        Task UpdatePokemon(UpdatePokemonDto pokemon);
     }
 }

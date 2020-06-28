@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Mapster;
 using Pokedex.Domain.Dtos.Pokemon;
 using Pokedex.Domain.Repositories;
 using Pokedex.Infrastructure.Repositories.Entities;
@@ -18,19 +19,49 @@ namespace Pokedex.Infrastructure.Repositories
             _amazonDynamoDb = amazonDynamoDb;
             _tableName = "PokemonTable";
         }
-        public void DeletePokemon(int pokemonId)
+        public async Task DeletePokemon(int pokemonNumber)
         {
-            throw new System.NotImplementedException();
+            var request = new DeleteItemRequest
+            {
+                TableName = _tableName,
+                Key = new Dictionary<string, AttributeValue> { { "Number", new AttributeValue { N = pokemonNumber.ToString() } } }
+            };
+
+            var response = await _amazonDynamoDb.DeleteItemAsync(request);
         }
 
-        public GetPokemonDto GetPokemonByID(int pokemonId)
+        public async Task<GetPokemonDto> GetPokemonByNumber(int pokemonId)
         {
-            throw new System.NotImplementedException();
+            var request = new GetItemRequest
+            {
+                TableName = _tableName,
+                Key = new Dictionary<string, AttributeValue> { { "Number", new AttributeValue { N = pokemonId.ToString() } } }
+            };
+
+            //var response = await _amazonDynamoDb.GetItemAsync(request);
+            var response = await _amazonDynamoDb.GetItemAsync(request);
+
+            if (!response.IsItemSet)
+                return new GetPokemonDto();
+
+            return response.Adapt<GetPokemonDto>();
         }
 
-        public GetPokemonDto GetPokemonByName(string pokemonName)
+        public async Task<GetPokemonDto> GetPokemonByName(string pokemonName)
         {
-            throw new System.NotImplementedException();
+            var request = new GetItemRequest
+            {
+                TableName = _tableName,
+                Key = new Dictionary<string, AttributeValue> { { "Name", new AttributeValue { S = pokemonName.ToString() } } }
+            };
+
+            //var response = await _amazonDynamoDb.GetItemAsync(request);
+            var response = await _amazonDynamoDb.GetItemAsync(request);
+
+            if (!response.IsItemSet)
+                return new GetPokemonDto();
+
+            return response.Adapt<GetPokemonDto>();
         }
 
         public async Task InsertPokemonAsync(AddPokemonDto pokemonDto)
@@ -52,7 +83,7 @@ namespace Pokedex.Infrastructure.Repositories
             await _amazonDynamoDb.PutItemAsync(request);
         }
 
-        public void UpdatePokemon(UpdatePokemonDto pokemon)
+        public async Task UpdatePokemon(UpdatePokemonDto pokemon)
         {
             throw new System.NotImplementedException();
         }

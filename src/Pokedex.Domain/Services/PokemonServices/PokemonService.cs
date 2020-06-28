@@ -15,18 +15,15 @@ namespace Pokedex.Domain.Services.PokemonServices
         {
             _pokemonExternalService = pokemonExternalService;
             _pokemonRepository = pokemonRepository;
-
-            TypeAdapterConfig<GetPokemonDto, AddPokemonDto>
-                .NewConfig()
-                .Map(dest => dest.Number, src => src.Id)
-                .Ignore(dest => dest.Id);
         }
 
         public async Task<GetPokemonDto> BuildPokemonByNumber(int pokemonNumber)
         {
             var pokemonApi = await _pokemonExternalService.GetPokemonByNumberApi(pokemonNumber);
 
-            await AddPokemon(pokemonApi.Adapt<AddPokemonDto>());
+            var response = _pokemonRepository.GetPokemonByNumber(pokemonNumber);
+
+            //await AddPokemon(pokemonApi.Adapt<AddPokemonDto>());
 
             return new GetPokemonDto();
         }
