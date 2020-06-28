@@ -45,6 +45,9 @@ namespace Pokedex.API
             services.AddScoped<IPokemonExternalService, PokemonExternalService>();
             services.AddScoped<IPokemonService, PokemonService>();
 
+            var pokeApiSection = Configuration.GetSection("PokeApi");
+            services.Configure<AppSettings>(pokeApiSection);
+
             var dynamoDbConfig = Configuration.GetSection("DynamoDb");
             var runLocalDynamoDb = dynamoDbConfig.GetValue<bool>("LocalMode");
 
