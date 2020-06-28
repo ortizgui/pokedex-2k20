@@ -2,15 +2,19 @@ using System.Threading.Tasks;
 using Pokedex.Domain.ExternalServices;
 using Mapster;
 using Pokedex.Domain.Dtos.Pokemon;
+using Pokedex.Domain.Repositories;
 
 namespace Pokedex.Domain.Services.PokemonServices
 {
     public class PokemonService : IPokemonService
     {
         private readonly IPokemonExternalService _pokemonExternalService;
-        public PokemonService(IPokemonExternalService pokemonExternalService)
+        private readonly IPokemonRepository _pokemonRepository;
+        public PokemonService(IPokemonExternalService pokemonExternalService,
+                                IPokemonRepository pokemonRepository)
         {
             _pokemonExternalService = pokemonExternalService;
+            _pokemonRepository = pokemonRepository;
 
             TypeAdapterConfig<GetPokemonDto, AddPokemonDto>
                 .NewConfig()
@@ -20,8 +24,6 @@ namespace Pokedex.Domain.Services.PokemonServices
 
         public async Task<GetPokemonDto> BuildPokemonByNumber(int pokemonNumber)
         {
-            //GetPokemonDto registeredPokemon;
-
             var pokemonApi = await _pokemonExternalService.GetPokemonByNumberApi(pokemonNumber);
 
             await AddPokemon(pokemonApi.Adapt<AddPokemonDto>());
@@ -29,11 +31,9 @@ namespace Pokedex.Domain.Services.PokemonServices
             return new GetPokemonDto();
         }
 
-        private async Task<int> AddPokemon(AddPokemonDto newPokemonDto)
+        private async Task AddPokemon(AddPokemonDto newPokemonDto)
         {
-            var pokemonDb = await _pokemonExternalService.AddPokemonDb(newPokemonDto);
-
-            return pokemonDb.Number;
+            await _pokemonRepository.InsertPokemonAsync(newPokemonDto);
         }
     }
 }

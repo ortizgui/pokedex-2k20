@@ -17,6 +17,8 @@ using System.Reflection;
 using Jaeger;
 using OpenTracing.Util;
 using Amazon.DynamoDBv2;
+using Pokedex.Infrastructure.Repositories;
+using Pokedex.Domain.Repositories;
 
 namespace Pokedex.API
 {
@@ -44,6 +46,7 @@ namespace Pokedex.API
             services.AddMediatR(assembly);
             services.AddScoped<IPokemonExternalService, PokemonExternalService>();
             services.AddScoped<IPokemonService, PokemonService>();
+            services.AddScoped<IPokemonRepository, PokemonRepository>();
 
             var pokeApiSection = Configuration.GetSection("PokeApi");
             services.Configure<AppSettings>(pokeApiSection);
