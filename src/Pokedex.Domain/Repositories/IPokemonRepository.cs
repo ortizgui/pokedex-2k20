@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Pokedex.Domain.Dtos.Pokemon;
 
 namespace Pokedex.Domain.Repositories
@@ -6,7 +7,7 @@ namespace Pokedex.Domain.Repositories
     {
         GetPokemonDto GetPokemonByID(int pokemonId);
         GetPokemonDto GetPokemonByName(string pokemonName);
-        void InsertPokemon(AddPokemonDto pokemon);        
+        Task InsertPokemonAsync(AddPokemonDto pokemonDto);  
         void DeletePokemon(int pokemonId);        
         void UpdatePokemon(UpdatePokemonDto pokemon);  
     }

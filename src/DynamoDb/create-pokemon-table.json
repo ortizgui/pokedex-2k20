@@ -1,0 +1,13 @@
+{
+    "TableName": "PokemonTable",
+    "KeySchema": [
+      { "AttributeName": "Number", "KeyType": "HASH" }
+    ],
+    "AttributeDefinitions": [
+      { "AttributeName": "Number", "AttributeType": "N" }
+    ],
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 5,
+      "WriteCapacityUnits": 5
+    }
+}

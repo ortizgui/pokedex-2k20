@@ -9,8 +9,6 @@ using Pokedex.Domain.Entities;
 using Pokedex.Domain.ExternalServices;
 using Pokedex.Infrastructure.ExternalServices.Pokemon;
 using Pokedex.Domain.Services.PokemonServices;
-using Pokedex.Domain.Services.TypeServices;
-using Pokedex.Domain.Services.PokemonTypeServices;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Logging;
 using Jaeger.Samplers;
@@ -18,6 +16,7 @@ using OpenTracing;
 using System.Reflection;
 using Jaeger;
 using OpenTracing.Util;
+using Amazon.DynamoDBv2;
 
 namespace Pokedex.API
 {
@@ -45,8 +44,22 @@ namespace Pokedex.API
             services.AddMediatR(assembly);
             services.AddScoped<IPokemonExternalService, PokemonExternalService>();
             services.AddScoped<IPokemonService, PokemonService>();
-            services.AddScoped<ITypeService, TypeService>();
-            services.AddScoped<IPokemonTypeService, PokemonTypeService>();
+
+            var dynamoDbConfig = Configuration.GetSection("DynamoDb");
+            var runLocalDynamoDb = dynamoDbConfig.GetValue<bool>("LocalMode");
+
+            if (runLocalDynamoDb)
+            {
+                services.AddSingleton<IAmazonDynamoDB>(sp =>
+                {
+                    var clientConfig = new AmazonDynamoDBConfig { ServiceURL = dynamoDbConfig.GetValue<string>("LocalServiceUrl") };
+                    return new AmazonDynamoDBClient(clientConfig);
+                });
+            }
+            else
+            {
+                services.AddAWSService<IAmazonDynamoDB>();
+            }
 
             services.AddSingleton<ITracer>(serviceProvider =>  
             {  

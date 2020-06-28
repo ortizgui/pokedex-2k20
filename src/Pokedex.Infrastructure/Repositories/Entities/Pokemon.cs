@@ -1,17 +1,19 @@
 using System;
-using System.Collections.Generic;
+using Amazon.DynamoDBv2.DataModel;
 
-namespace Pokedex.Domain.Entities
+namespace Pokedex.Infrastructure.Repositories.Entities
 {
-    public class PokemonEntity
+    public class Pokemon
     {
+        [DynamoDBHashKey]
         public int Id { get; set; }
+        [DynamoDBGlobalSecondaryIndexHashKey]
         public int Number { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
         public int Height { get; set; }
         public int Weight { get; set; }
-        public DateTime DateCreated { get; set; } = DateTime.Now;
+        public DateTime DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; } = null;
     }
 }
