@@ -38,7 +38,6 @@ namespace Pokedex.Infrastructure.Repositories
                 Key = new Dictionary<string, AttributeValue> { { "Number", new AttributeValue { N = pokemonId.ToString() } } }
             };
 
-            //var response = await _amazonDynamoDb.GetItemAsync(request);
             var response = await _amazonDynamoDb.GetItemAsync(request);
 
             if (!response.IsItemSet)
@@ -55,7 +54,6 @@ namespace Pokedex.Infrastructure.Repositories
                 Key = new Dictionary<string, AttributeValue> { { "Name", new AttributeValue { S = pokemonName.ToString() } } }
             };
 
-            //var response = await _amazonDynamoDb.GetItemAsync(request);
             var response = await _amazonDynamoDb.GetItemAsync(request);
 
             if (!response.IsItemSet)
