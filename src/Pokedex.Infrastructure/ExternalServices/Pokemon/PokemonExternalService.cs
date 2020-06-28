@@ -2,18 +2,11 @@
 using Pokedex.Domain.Entities;
 using Pokedex.Domain.ExternalServices;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Pokedex.Domain.Dtos.Pokemon;
-using Newtonsoft;
 using Pokedex.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Mapster;
-using Pokedex.Domain.Dtos.PokemonType;
-using System.Linq;
-using Newtonsoft.Json;
 
 namespace Pokedex.Infrastructure.ExternalServices.Pokemon
 {

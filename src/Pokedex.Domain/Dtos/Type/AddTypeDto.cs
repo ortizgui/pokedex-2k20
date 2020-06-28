@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Pokedex.Domain.Entities;
-
 namespace Pokedex.Domain.Dtos.Type
 {
     public class AddTypeDto

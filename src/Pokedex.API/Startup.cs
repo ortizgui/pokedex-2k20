@@ -1,18 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using MediatR;
-using Pokedex.Domain.Repository;
-using Pokedex.Domain.Repository.Interfaces;
 using Pokedex.Domain.Entities;
 using Pokedex.Domain.ExternalServices;
 using Pokedex.Infrastructure.ExternalServices.Pokemon;
@@ -24,6 +16,12 @@ using Pokedex.Infrastructure.ExternalServices.PokemonType;
 using Pokedex.Domain.Services.TypeServices;
 using Pokedex.Domain.Services.PokemonTypeServices;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Logging;
+using Jaeger.Samplers;
+using OpenTracing;
+using System.Reflection;
+using Jaeger;
+using OpenTracing.Util;
 
 namespace Pokedex.API
 {
@@ -64,9 +62,28 @@ namespace Pokedex.API
 
             var pokeApiSection = Configuration.GetSection("PokeApi");
             services.Configure<AppSettings>(pokeApiSection);
+
+            services.AddSingleton<ITracer>(serviceProvider =>  
+            {  
+                string serviceName = Assembly.GetEntryAssembly().GetName().Name;  
+            
+                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();  
+            
+                ISampler sampler = new ConstSampler(sample: true);  
+            
+                ITracer tracer = new Tracer.Builder(serviceName)  
+                    .WithLoggerFactory(loggerFactory)  
+                    .WithSampler(sampler)  
+                    .Build();  
+            
+                GlobalTracer.Register(tracer);  
+            
+                return tracer;  
+            });  
+            
+            services.AddOpenTracing();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

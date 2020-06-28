@@ -1,5 +1,3 @@
-using System;
-
 namespace Pokedex.Domain.Dtos.PokemonType
 {
     public class AddPokemonTypeDto

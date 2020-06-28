@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Pokedex.Domain.Dtos.Pokemon;
-using Pokedex.Domain.Entities;
 
 namespace Pokedex.Domain.Services.PokemonServices
 {

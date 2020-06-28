@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Pokedex.Domain.Commands;
-using System;
 
 namespace Pokedex.API.Controllers
 {

@@ -8,11 +8,11 @@ using Pokedex.Domain.Dtos.Pokemon;
 
 namespace Pokedex.Domain.Handler
 {
-    public class PokemonGetHandler : IRequestHandler<PokemonGetByNumberCommand, ServiceResponse<GetPokemonDto>>
+    public class PokemonGetByNumberHandler : IRequestHandler<PokemonGetByNumberCommand, ServiceResponse<GetPokemonDto>>
     {
         private readonly IPokemonService _pokemonService;
 
-        public PokemonGetHandler(IPokemonService pokemonService)
+        public PokemonGetByNumberHandler(IPokemonService pokemonService)
         {
             _pokemonService = pokemonService;
         }

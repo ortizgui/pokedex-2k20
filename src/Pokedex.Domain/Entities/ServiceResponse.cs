@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Pokedex.Domain.Entities
+﻿namespace Pokedex.Domain.Entities
 {
     public class ServiceResponse<T>
     {

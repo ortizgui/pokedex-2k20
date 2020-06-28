@@ -12,15 +12,6 @@ External API: [PokéAPI](https://pokeapi.co/).
 ## Endpoints
 * */api/Pokemon/{pokemonNumber}
 
-## Libraries used
-
-* MediatR
-* MediatR.Extensions.Microsoft.DependencyInjection
-* Mapster
-* Restsharp
-* Newtonsoft.JSON
-* Microsoft.EntityFrameworkCore.SqlServer
-
 ## Running the project locally
 
 In the directory  .\Pokedex.API and run the command:

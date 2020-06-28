@@ -1,13 +1,7 @@
 using System.Threading.Tasks;
-using Pokedex.Domain.Entities;
 using Pokedex.Domain.ExternalServices;
-using Pokedex.Domain.Services.PokemonServices;
 using Mapster;
 using Pokedex.Domain.Dtos.Pokemon;
-using Pokedex.Domain.Dtos.Type;
-using Pokedex.Domain.Dtos.PokemonType;
-using System.Collections.Generic;
-using System;
 using Pokedex.Domain.Services.TypeServices;
 
 namespace Pokedex.Domain.Services.PokemonServices

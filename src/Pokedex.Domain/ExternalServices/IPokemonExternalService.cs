@@ -1,10 +1,4 @@
-﻿﻿using Pokedex.Domain.Dtos.Pokemon;
-using Pokedex.Domain.Dtos.PokemonType;
-using Pokedex.Domain.Dtos.Type;
-using Pokedex.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Pokedex.Domain.Dtos.Pokemon;
 using System.Threading.Tasks;
 
 namespace Pokedex.Domain.ExternalServices

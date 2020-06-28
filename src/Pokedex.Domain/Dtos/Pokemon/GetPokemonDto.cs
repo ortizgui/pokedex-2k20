@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Pokedex.Domain.Dtos.Type;
 using Pokedex.Domain.Entities;
 
 namespace Pokedex.Domain.Dtos.Pokemon

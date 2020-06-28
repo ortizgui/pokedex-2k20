@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
 using Pokedex.Domain.Entities;
-using System.IO;
 
 namespace Pokedex.Infrastructure.Data
 {

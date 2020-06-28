@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Pokedex.Infrastructure.ExternalServices.Dtos
+﻿namespace Pokedex.Infrastructure.ExternalServices.Dtos
 {
     public class GetPokemonDto
     {
