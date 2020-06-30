@@ -16,11 +16,6 @@ namespace Pokedex.Domain.Services.PokemonServices
         {
             _pokemonExternalService = pokemonExternalService;
             _pokemonRepository = pokemonRepository;
-            
-            TypeAdapterConfig<GetPokemonDto, AddPokemonDto>
-                .NewConfig()
-                .Map(dest => dest.Number, src => src.Id)
-                .Ignore(dest => dest.Id);
         }
 
         public async Task<GetPokemonDto> BuildPokemonByNumber(int pokemonNumber)
@@ -31,11 +26,11 @@ namespace Pokedex.Domain.Services.PokemonServices
 
             if (String.IsNullOrEmpty(pokemonDto.Name))
             {
-                pokemonDto = await _pokemonExternalService.GetPokemonByNumberApi(pokemonNumber);
+                pokemonDto = await _pokemonExternalService.GetPokemonByNumber(pokemonNumber);
                 await AddPokemon(pokemonDto.Adapt<AddPokemonDto>());
             }
 
-            return pokemonDto.Adapt<GetPokemonDto>();
+            return pokemonDto;
         }
 
         private async Task AddPokemon(AddPokemonDto newPokemonDto)

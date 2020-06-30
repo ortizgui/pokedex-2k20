@@ -24,25 +24,12 @@ namespace Pokedex.Infrastructure.ExternalServices.Pokemon
             TypeAdapterConfig<GetPokemonApiDto, GetPokemonDto>
                 .NewConfig()
                 .Map(dest => dest.Number, src => src.Id)
-                .Ignore(dest => dest.Id)
                 .Ignore(dest => dest.Types);
         }
 
-        public async Task<GetPokemonDto> GetPokemonByNameApi(string pokemonName)
+        public async Task<GetPokemonDto> GetPokemonByName(string pokemonName)
         {
             var request = new RestRequest($"api/v2/pokemon/{pokemonName}", Method.GET);
-
-            IRestResponse response = await _pokeClient.ExecuteAsync(request);
-
-            var pokemonDto = Newtonsoft.Json.JsonConvert
-                                .DeserializeObject<GetPokemonDto>(response.Content);
-
-            return pokemonDto;
-        }
-
-        public async Task<GetPokemonDto> GetPokemonByNumberApi(int pokemonNumber)
-        {
-            var request = new RestRequest($"api/v2/pokemon/{pokemonNumber}", Method.GET);
 
             IRestResponse response = await _pokeClient.ExecuteAsync(request);
 
@@ -56,40 +43,20 @@ namespace Pokedex.Infrastructure.ExternalServices.Pokemon
             return pokemonDto;
         }
 
-        public async Task<GetPokemonDto> AddPokemonDb(AddPokemonDto pokemon)
+        public async Task<GetPokemonDto> GetPokemonByNumber(int pokemonNumber)
         {
-            throw new NotImplementedException();
-            // var dbPokemon = await GetPokemonByNameDb(pokemon.Name);
+            var request = new RestRequest($"api/v2/pokemon/{pokemonNumber}", Method.GET);
 
-            // if(dbPokemon == null)
-            // {
-            //     var addPokemon = pokemon.Adapt<PokemonEntity>();
+            IRestResponse response = await _pokeClient.ExecuteAsync(request);
 
-            //     await _context.TB_POKEMONS.AddAsync(addPokemon);
-            //     await _context.SaveChangesAsync();
-
-            //     dbPokemon = await GetPokemonByNameDb(pokemon.Name);
-            // }
-
-            // return dbPokemon.Adapt<GetPokemonDto>();
-        }
-
-        public async Task<GetPokemonDto> GetPokemonByNameDb(string pokemonName)
-        {
-            throw new NotImplementedException();
-            // var dbPokemon = await _context.TB_POKEMONS
-            //                         .FirstOrDefaultAsync(p => p.Name == pokemonName);
+            var pokemonApiDto = Newtonsoft.Json.JsonConvert
+                .DeserializeObject<GetPokemonApiDto>(response.Content);
             
-            // return dbPokemon.Adapt<GetPokemonDto>();
-        }
+            var pokemonDto = pokemonApiDto.Adapt<GetPokemonDto>();
 
-        public async Task<GetPokemonDto> GetPokemonByNumberDb(int pokemonNumber)
-        {
-            throw new NotImplementedException();
-            // var dbPokemon = await _context.TB_POKEMONS
-            //                         .FirstOrDefaultAsync(p => p.Number == pokemonNumber);
+            pokemonDto.Types = new List<string>(NormalizePokemonTypes(pokemonApiDto.Types));
 
-            // return dbPokemon.Adapt<GetPokemonDto>();
+            return pokemonDto;
         }
 
         private List<string> NormalizePokemonTypes(List<TypesGroupApiDto> typesGroup)
