@@ -11,6 +11,6 @@ namespace Pokedex.Domain.Dtos.Pokemon
         public int Order { get; set; }
         public int Height { get; set; }
         public int Weight { get; set; }
-        public List<TypesEntity> Types { get; set; }
+        public List<string> Types { get; set; }
     }
 }

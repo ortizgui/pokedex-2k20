@@ -1,9 +1,8 @@
-using System.Collections.Generic;
-using Pokedex.Domain.Entities;
+﻿using System.Collections.Generic;
 
-namespace Pokedex.Domain.Dtos.Pokemon
+namespace Pokedex.Infrastructure.ExternalServices.Dtos
 {
-    public class AddPokemonDto
+    public class GetPokemonApiDto
     {
         public int Id { get; set; }
         public int Number { get; set; }
@@ -11,6 +10,6 @@ namespace Pokedex.Domain.Dtos.Pokemon
         public int Order { get; set; }
         public int Height { get; set; }
         public int Weight { get; set; }
-        public List<string> Types { get; set; }
+        public List<TypesGroupApiDto> Types { get; set; }
     }
 }

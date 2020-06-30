@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Options;
 using Pokedex.Domain.Entities;
 using Pokedex.Domain.ExternalServices;
 using RestSharp;
 using System.Threading.Tasks;
+using Mapster;
 using Pokedex.Domain.Dtos.Pokemon;
+using Pokedex.Infrastructure.ExternalServices.Dtos;
 
 namespace Pokedex.Infrastructure.ExternalServices.Pokemon
 {
@@ -17,6 +20,12 @@ namespace Pokedex.Infrastructure.ExternalServices.Pokemon
         {
             _appSettings = appSettings.Value;
             _pokeClient = new RestClient(_appSettings.PokeUrl);
+            
+            TypeAdapterConfig<GetPokemonApiDto, GetPokemonDto>
+                .NewConfig()
+                .Map(dest => dest.Number, src => src.Id)
+                .Ignore(dest => dest.Id)
+                .Ignore(dest => dest.Types);
         }
 
         public async Task<GetPokemonDto> GetPokemonByNameApi(string pokemonName)
@@ -37,8 +46,12 @@ namespace Pokedex.Infrastructure.ExternalServices.Pokemon
 
             IRestResponse response = await _pokeClient.ExecuteAsync(request);
 
-            var pokemonDto = Newtonsoft.Json.JsonConvert
-                                .DeserializeObject<GetPokemonDto>(response.Content);
+            var pokemonApiDto = Newtonsoft.Json.JsonConvert
+                .DeserializeObject<GetPokemonApiDto>(response.Content);
+            
+            var pokemonDto = pokemonApiDto.Adapt<GetPokemonDto>();
+
+            pokemonDto.Types = new List<string>(NormalizePokemonTypes(pokemonApiDto.Types));
 
             return pokemonDto;
         }
@@ -77,6 +90,18 @@ namespace Pokedex.Infrastructure.ExternalServices.Pokemon
             //                         .FirstOrDefaultAsync(p => p.Number == pokemonNumber);
 
             // return dbPokemon.Adapt<GetPokemonDto>();
+        }
+
+        private List<string> NormalizePokemonTypes(List<TypesGroupApiDto> typesGroup)
+        {
+            List<string> pokemonTypes = new List<string>();
+            
+            foreach (var types in typesGroup)
+            {
+                pokemonTypes.Add(types.Type.Name);    
+            }
+
+            return pokemonTypes;
         }
     }
 }
