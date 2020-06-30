@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using Mapster;
 using Pokedex.Domain.Dtos.Pokemon;
 using Pokedex.Domain.Repositories;
 
@@ -40,6 +39,9 @@ namespace Pokedex.Infrastructure.Repositories
             };
 
             var response = await _amazonDynamoDb.GetItemAsync(request);
+            
+            if (!response.IsItemSet)
+                return new GetPokemonDto();
             
             var pokemonDto = new GetPokemonDto()
             {

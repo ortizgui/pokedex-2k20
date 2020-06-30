@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Pokedex.Domain.ExternalServices;
 using Mapster;
@@ -24,13 +25,17 @@ namespace Pokedex.Domain.Services.PokemonServices
 
         public async Task<GetPokemonDto> BuildPokemonByNumber(int pokemonNumber)
         {
-            var pokemonApi = await _pokemonExternalService.GetPokemonByNumberApi(pokemonNumber);
+            GetPokemonDto pokemonDto;
+                
+            pokemonDto = await _pokemonRepository.GetPokemonByNumber(pokemonNumber);
 
-            await AddPokemon(pokemonApi.Adapt<AddPokemonDto>());
+            if (String.IsNullOrEmpty(pokemonDto.Name))
+            {
+                pokemonDto = await _pokemonExternalService.GetPokemonByNumberApi(pokemonNumber);
+                await AddPokemon(pokemonDto.Adapt<AddPokemonDto>());
+            }
 
-            var response = await _pokemonRepository.GetPokemonByNumber(pokemonNumber);
-
-            return response;
+            return pokemonDto.Adapt<GetPokemonDto>();
         }
 
         private async Task AddPokemon(AddPokemonDto newPokemonDto)
