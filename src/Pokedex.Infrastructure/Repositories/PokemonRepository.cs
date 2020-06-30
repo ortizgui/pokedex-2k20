@@ -28,13 +28,11 @@ namespace Pokedex.Infrastructure.Repositories
                 Key = new Dictionary<string, AttributeValue> { { "Number", new AttributeValue { N = pokemonNumber.ToString() } } }
             };
 
-            var response = await _amazonDynamoDb.DeleteItemAsync(request);
+            await _amazonDynamoDb.DeleteItemAsync(request);
         }
 
         public async Task<GetPokemonDto> GetPokemonByNumber(int pokemonNumber)
         {
-            var keyToGet = new Dictionary<string ,AttributeValue>();
-            
             var request = new GetItemRequest
             {
                 TableName = _tableName,
@@ -57,7 +55,24 @@ namespace Pokedex.Infrastructure.Repositories
 
         public async Task<GetPokemonDto> GetPokemonByName(string pokemonName)
         {
-            throw new NotImplementedException();
+            var request = new GetItemRequest
+            {
+                TableName = _tableName,
+                Key = new Dictionary<string, AttributeValue> { { "Name", new AttributeValue { S = pokemonName.ToString() } } }
+            };
+
+            var response = await _amazonDynamoDb.GetItemAsync(request);
+            
+            var pokemonDto = new GetPokemonDto()
+            {
+                Number = Convert.ToInt16(response.Item["Number"].N),
+                Name = response.Item["Name"].S,
+                Order = Convert.ToInt16(response.Item["Order"].N),
+                Height = Convert.ToInt16(response.Item["Height"].N),
+                Weight = Convert.ToInt16(response.Item["Weight"].N)
+            };
+            
+            return pokemonDto;
         }
 
         public async Task InsertPokemonAsync(AddPokemonDto pokemonDto)
@@ -77,11 +92,6 @@ namespace Pokedex.Infrastructure.Repositories
             };
 
             await _amazonDynamoDb.PutItemAsync(request);
-        }
-
-        public async Task UpdatePokemon(UpdatePokemonDto pokemon)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

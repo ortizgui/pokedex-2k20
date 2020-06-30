@@ -9,6 +9,5 @@ namespace Pokedex.Domain.Repositories
         Task<GetPokemonDto> GetPokemonByName(string pokemonName);
         Task InsertPokemonAsync(AddPokemonDto pokemonDto);
         Task DeletePokemon(int pokemonId);
-        Task UpdatePokemon(UpdatePokemonDto pokemon);
     }
 }
