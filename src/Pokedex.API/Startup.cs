@@ -8,7 +8,6 @@ using MediatR;
 using Pokedex.Domain.Entities;
 using Pokedex.Domain.ExternalServices;
 using Pokedex.Infrastructure.ExternalServices.Pokemon;
-using Pokedex.Domain.Services.PokemonServices;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Logging;
 using Jaeger.Samplers;
@@ -45,7 +44,6 @@ namespace Pokedex.API
 
             services.AddMediatR(assembly);
             services.AddScoped<IPokemonExternalService, PokemonExternalService>();
-            services.AddScoped<IPokemonService, PokemonService>();
             services.AddScoped<IPokemonRepository, PokemonRepository>();
 
             var pokeApiSection = Configuration.GetSection("PokeApi");

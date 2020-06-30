@@ -1,27 +1,41 @@
-﻿using Pokedex.Domain.Commands;
+﻿using System;
+using Pokedex.Domain.Commands;
 using Pokedex.Domain.Entities;
 using MediatR;
 using System.Threading.Tasks;
 using System.Threading;
-using Pokedex.Domain.Services.PokemonServices;
+using Mapster;
 using Pokedex.Domain.Dtos.Pokemon;
+using Pokedex.Domain.ExternalServices;
+using Pokedex.Domain.Repositories;
 
 namespace Pokedex.Domain.Handler
 {
     public class PokemonGetByNumberHandler : IRequestHandler<PokemonGetByNumberCommand, ServiceResponse<GetPokemonDto>>
     {
-        private readonly IPokemonService _pokemonService;
+        private readonly IPokemonExternalService _pokemonExternalService;
+        private readonly IPokemonRepository _pokemonRepository;
 
-        public PokemonGetByNumberHandler(IPokemonService pokemonService)
+        public PokemonGetByNumberHandler(IPokemonExternalService pokemonExternalService,
+                                        IPokemonRepository pokemonRepository)
         {
-            _pokemonService = pokemonService;
+            _pokemonExternalService = pokemonExternalService;
+            _pokemonRepository = pokemonRepository;
         }
 
         public async Task<ServiceResponse<GetPokemonDto>> Handle(PokemonGetByNumberCommand request, CancellationToken cancellationToken)
         { 
             ServiceResponse<GetPokemonDto> serviceResponse = new ServiceResponse<GetPokemonDto>();
 
-            var pokemonDto = await _pokemonService.BuildPokemonByNumber(request.Number);
+            GetPokemonDto pokemonDto;
+                
+            pokemonDto = await _pokemonRepository.GetPokemonByNumber(request.Number);
+
+            if (String.IsNullOrEmpty(pokemonDto.Name))
+            {
+                pokemonDto = await _pokemonExternalService.GetPokemonByNumber(request.Number);
+                await _pokemonRepository.InsertPokemonAsync(pokemonDto.Adapt<AddPokemonDto>());
+            }
 
             serviceResponse.Data = pokemonDto;
 
