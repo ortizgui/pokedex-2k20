@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Pokedex.Domain.Dtos.Pokemon;
+using Pokedex.Domain.Entities;
 using Pokedex.Domain.Repositories;
 
 namespace Pokedex.Infrastructure.Repositories
@@ -30,12 +31,12 @@ namespace Pokedex.Infrastructure.Repositories
             await _amazonDynamoDb.DeleteItemAsync(request);
         }
 
-        public async Task<GetPokemonDto> GetPokemonByNumber(int pokemonNumber)
+        public async Task<GetPokemonDto> GetPokemon(EnumPokemonSelectOptions selectOption, string pokemonIdentity)
         {
             var request = new GetItemRequest
             {
                 TableName = _tableName,
-                Key = new Dictionary<string, AttributeValue> { { "Number", new AttributeValue { N = pokemonNumber.ToString() } } }
+                Key = new Dictionary<string, AttributeValue> { { selectOption.ToString(), new AttributeValue { N = pokemonIdentity.ToString() } } }
             };
 
             var response = await _amazonDynamoDb.GetItemAsync(request);
@@ -50,28 +51,6 @@ namespace Pokedex.Infrastructure.Repositories
                Order = Convert.ToInt16(response.Item["Order"].N),
                Height = Convert.ToInt16(response.Item["Height"].N),
                Weight = Convert.ToInt16(response.Item["Weight"].N)
-            };
-            
-            return pokemonDto;
-        }
-
-        public async Task<GetPokemonDto> GetPokemonByName(string pokemonName)
-        {
-            var request = new GetItemRequest
-            {
-                TableName = _tableName,
-                Key = new Dictionary<string, AttributeValue> { { "Name", new AttributeValue { S = pokemonName.ToString() } } }
-            };
-
-            var response = await _amazonDynamoDb.GetItemAsync(request);
-            
-            var pokemonDto = new GetPokemonDto()
-            {
-                Number = Convert.ToInt16(response.Item["Number"].N),
-                Name = response.Item["Name"].S,
-                Order = Convert.ToInt16(response.Item["Order"].N),
-                Height = Convert.ToInt16(response.Item["Height"].N),
-                Weight = Convert.ToInt16(response.Item["Weight"].N)
             };
             
             return pokemonDto;

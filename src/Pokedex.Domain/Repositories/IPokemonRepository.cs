@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
 using Pokedex.Domain.Dtos.Pokemon;
+using Pokedex.Domain.Entities;
 
 namespace Pokedex.Domain.Repositories
 {
     public interface IPokemonRepository
     {
-        Task<GetPokemonDto> GetPokemonByNumber(int pokemonId);
-        Task<GetPokemonDto> GetPokemonByName(string pokemonName);
+        Task<GetPokemonDto> GetPokemon(EnumPokemonSelectOptions selectOption, string pokemonIdentity);
         Task InsertPokemonAsync(AddPokemonDto pokemonDto);
         Task DeletePokemon(int pokemonId);
     }

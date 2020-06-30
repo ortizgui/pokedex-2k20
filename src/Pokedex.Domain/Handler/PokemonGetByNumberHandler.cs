@@ -27,9 +27,7 @@ namespace Pokedex.Domain.Handler
         { 
             ServiceResponse<GetPokemonDto> serviceResponse = new ServiceResponse<GetPokemonDto>();
 
-            GetPokemonDto pokemonDto;
-                
-            pokemonDto = await _pokemonRepository.GetPokemonByNumber(request.Number);
+            var pokemonDto = await _pokemonRepository.GetPokemon(EnumPokemonSelectOptions.Number, request.Number.ToString());
 
             if (String.IsNullOrEmpty(pokemonDto.Name))
             {
