@@ -31,8 +31,7 @@ namespace Pokedex.Domain.Handler
 
             if (String.IsNullOrEmpty(pokemonDto.Name))
             {
-                pokemonDto = await _pokemonExternalService.GetPokemonByNumber(request.Number);
-                await _pokemonRepository.InsertPokemonAsync(pokemonDto.Adapt<AddPokemonDto>());
+                pokemonDto = await GetPokemonInfoApi(request.Number);
             }
 
             serviceResponse.Data = pokemonDto;
@@ -44,6 +43,26 @@ namespace Pokedex.Domain.Handler
             }
 
             return serviceResponse;
+        }
+
+        private async Task<GetPokemonDto> GetPokemonInfoApi(int pokemonNumber)
+        {
+            GetPokemonDto pokemonDto;
+            
+            try
+            {
+                pokemonDto = await _pokemonExternalService.GetPokemonByNumber(pokemonNumber);
+                if (String.IsNullOrEmpty(pokemonDto.Name))
+                {
+                    await _pokemonRepository.InsertPokemonAsync(pokemonDto.Adapt<AddPokemonDto>());
+                }
+            }
+            catch (Exception e)
+            {
+                pokemonDto = null;
+            }
+
+            return pokemonDto;
         }
     }
 }
