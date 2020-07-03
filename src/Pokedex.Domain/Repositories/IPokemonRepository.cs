@@ -7,7 +7,7 @@ namespace Pokedex.Domain.Repositories
     public interface IPokemonRepository
     {
         Task<GetPokemonDto> GetPokemon(EnumPokemonSelectOptions selectOption, string pokemonIdentity);
-        Task InsertPokemonAsync(AddPokemonDto pokemonDto);
+        Task SavePokemon(AddPokemonDto pokemonDto);
         Task DeletePokemon(int pokemonId);
     }
 }

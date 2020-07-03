@@ -20,11 +20,11 @@ namespace Pokedex.Infrastructure.ExternalServices.Pokemon
         {
             _appSettings = appSettings.Value;
             _pokeClient = new RestClient(_appSettings.PokeUrl);
-            
+
             TypeAdapterConfig<GetPokemonApiDto, GetPokemonDto>
                 .NewConfig()
-                .Map(dest => dest.Number, src => src.Id)
-                .Ignore(dest => dest.Types);
+                .Map(dest => dest.Number, src => src.Id);
+            //.Ignore(dest => dest.Types);
         }
 
         public async Task<GetPokemonDto> GetPokemonByName(string pokemonName)
@@ -38,7 +38,7 @@ namespace Pokedex.Infrastructure.ExternalServices.Pokemon
             
             var pokemonDto = pokemonApiDto.Adapt<GetPokemonDto>();
 
-            pokemonDto.Types = new List<string>(NormalizePokemonTypes(pokemonApiDto.Types));
+            //pokemonDto.Types = new List<string>(NormalizePokemonTypes(pokemonApiDto.Types));
 
             return pokemonDto;
         }
@@ -54,7 +54,7 @@ namespace Pokedex.Infrastructure.ExternalServices.Pokemon
             
             var pokemonDto = pokemonApiDto.Adapt<GetPokemonDto>();
 
-            pokemonDto.Types = new List<string>(NormalizePokemonTypes(pokemonApiDto.Types));
+            //pokemonDto.Types = new List<string>(NormalizePokemonTypes(pokemonApiDto.Types));
 
             return pokemonDto;
         }

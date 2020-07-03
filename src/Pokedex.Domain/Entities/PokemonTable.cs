@@ -1,13 +1,13 @@
 using System;
+using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
 
-namespace Pokedex.Infrastructure.Repositories.Entities
+namespace Pokedex.Domain.Entities
 {
-    public class Pokemon
+    [DynamoDBTable("PokemonTable")]
+    public class PokemonTable
     {
         [DynamoDBHashKey]
-        public int Id { get; set; }
-        [DynamoDBProperty]
         public int Number { get; set; }
         [DynamoDBProperty]
         public string Name { get; set; }
@@ -17,6 +17,8 @@ namespace Pokedex.Infrastructure.Repositories.Entities
         public int Height { get; set; }
         [DynamoDBProperty]
         public int Weight { get; set; }
+        [DynamoDBProperty]
+        public List<string> Types { get; set; }
         [DynamoDBProperty]
         public DateTime DateCreated { get; set; }
         [DynamoDBProperty]

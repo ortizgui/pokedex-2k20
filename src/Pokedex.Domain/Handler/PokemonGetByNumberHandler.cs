@@ -30,9 +30,7 @@ namespace Pokedex.Domain.Handler
             var pokemonDto = await _pokemonRepository.GetPokemon(EnumPokemonSelectOptions.Number, request.Number.ToString());
 
             if (String.IsNullOrEmpty(pokemonDto.Name))
-            {
                 pokemonDto = await GetPokemonInfoApi(request.Number);
-            }
 
             serviceResponse.Data = pokemonDto;
 
@@ -52,10 +50,8 @@ namespace Pokedex.Domain.Handler
             try
             {
                 pokemonDto = await _pokemonExternalService.GetPokemonByNumber(pokemonNumber);
-                if (String.IsNullOrEmpty(pokemonDto.Name))
-                {
-                    await _pokemonRepository.InsertPokemonAsync(pokemonDto.Adapt<AddPokemonDto>());
-                }
+                if (!String.IsNullOrEmpty(pokemonDto.Name))
+                    await _pokemonRepository.SavePokemon(pokemonDto.Adapt<AddPokemonDto>());
             }
             catch (Exception e)
             {

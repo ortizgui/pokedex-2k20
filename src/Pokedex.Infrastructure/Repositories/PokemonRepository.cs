@@ -56,7 +56,7 @@ namespace Pokedex.Infrastructure.Repositories
             return pokemonDto;
         }
 
-        public async Task InsertPokemonAsync(AddPokemonDto pokemonDto)
+        public async Task SavePokemon(AddPokemonDto pokemonDto)
         {
             var request = new PutItemRequest
             {
