@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Mapster;
 using Pokedex.Domain.Dtos.Pokemon;
+using Pokedex.Domain.Dtos.Repository;
 using Pokedex.Domain.ExternalServices;
 using Pokedex.Domain.Repositories;
 
@@ -21,6 +22,10 @@ namespace Pokedex.Domain.Handler
         {
             _pokemonExternalService = pokemonExternalService;
             _pokemonRepository = pokemonRepository;
+            
+            TypeAdapterConfig<GetPokemonDto, AddPokemonRepositoryDto>
+                .NewConfig()
+                .Ignore(dest => dest.DateCreated);
         }
 
         public async Task<ServiceResponse<GetPokemonDto>> Handle(PokemonGetByNumberCommand request, CancellationToken cancellationToken)
@@ -51,7 +56,7 @@ namespace Pokedex.Domain.Handler
             {
                 pokemonDto = await _pokemonExternalService.GetPokemonByNumber(pokemonNumber);
                 if (!String.IsNullOrEmpty(pokemonDto.Name))
-                    await _pokemonRepository.SavePokemon(pokemonDto.Adapt<AddPokemonDto>());
+                    await _pokemonRepository.SavePokemon(pokemonDto.Adapt<AddPokemonRepositoryDto>());
             }
             catch (Exception e)
             {

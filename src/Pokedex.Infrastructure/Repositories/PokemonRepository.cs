@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Pokedex.Domain.Dtos.Pokemon;
+using Pokedex.Domain.Dtos.Repository;
 using Pokedex.Domain.Entities;
 using Pokedex.Domain.Repositories;
 
@@ -50,25 +51,25 @@ namespace Pokedex.Infrastructure.Repositories
                Name = response.Item["Name"].S,
                Order = Convert.ToInt16(response.Item["Order"].N),
                Height = Convert.ToInt16(response.Item["Height"].N),
-               Weight = Convert.ToInt16(response.Item["Weight"].N)
+               Weight = Convert.ToInt16(response.Item["Weight"].N),
             };
             
             return pokemonDto;
         }
 
-        public async Task SavePokemon(AddPokemonDto pokemonDto)
+        public async Task SavePokemon(AddPokemonRepositoryDto pokemonRepositoryDto)
         {
             var request = new PutItemRequest
             {
                 TableName = _tableName,
                 Item = new Dictionary<string, AttributeValue>
                 {
-                    { "Number", new AttributeValue { N = pokemonDto.Number.ToString() }},
-                    { "Name", new AttributeValue { S = pokemonDto.Name }},
-                    { "Order", new AttributeValue { N = pokemonDto.Order.ToString() }},
-                    { "Height", new AttributeValue { N = pokemonDto.Height.ToString() }},
-                    { "Weight", new AttributeValue { N = pokemonDto.Weight.ToString() }},
-                    { "DateCreated", new AttributeValue { S = DateTime.Now.ToString() }},
+                    { "Number", new AttributeValue { N = pokemonRepositoryDto.Number.ToString() }},
+                    { "Name", new AttributeValue { S = pokemonRepositoryDto.Name }},
+                    { "Order", new AttributeValue { N = pokemonRepositoryDto.Order.ToString() }},
+                    { "Height", new AttributeValue { N = pokemonRepositoryDto.Height.ToString() }},
+                    { "Weight", new AttributeValue { N = pokemonRepositoryDto.Weight.ToString() }},
+                    { "DateCreated", new AttributeValue { S = pokemonRepositoryDto.DateCreated.ToString() }},
                 }
             };
 
