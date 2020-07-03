@@ -1,8 +1,8 @@
-using System;
+﻿using System.Collections.Generic;
 
-namespace Pokedex.Domain.Entities
+namespace Pokedex.Infrastructure.ExternalServices.Dtos
 {
-    public class PokemonEntity
+    public class GetPokemonApiDto
     {
         public int Id { get; set; }
         public int Number { get; set; }
@@ -10,7 +10,6 @@ namespace Pokedex.Domain.Entities
         public int Order { get; set; }
         public int Height { get; set; }
         public int Weight { get; set; }
-        public DateTime DateCreated { get; set; } = DateTime.Now;
-        public DateTime? DateUpdated { get; set; } = null;
+        public List<TypesGroupApiDto> Types { get; set; }
     }
 }

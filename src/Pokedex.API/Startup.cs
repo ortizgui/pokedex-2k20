@@ -8,13 +8,6 @@ using MediatR;
 using Pokedex.Domain.Entities;
 using Pokedex.Domain.ExternalServices;
 using Pokedex.Infrastructure.ExternalServices.Pokemon;
-using Pokedex.Domain.Services.PokemonServices;
-using Pokedex.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using Pokedex.Infrastructure.ExternalServices.Type;
-using Pokedex.Infrastructure.ExternalServices.PokemonType;
-using Pokedex.Domain.Services.TypeServices;
-using Pokedex.Domain.Services.PokemonTypeServices;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Logging;
 using Jaeger.Samplers;
@@ -22,6 +15,9 @@ using OpenTracing;
 using System.Reflection;
 using Jaeger;
 using OpenTracing.Util;
+using Amazon.DynamoDBv2;
+using Pokedex.Infrastructure.Repositories;
+using Pokedex.Domain.Repositories;
 
 namespace Pokedex.API
 {
@@ -37,12 +33,6 @@ namespace Pokedex.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"),
-                    sqlServerOptions => sqlServerOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-
             var assembly = AppDomain.CurrentDomain.Load("Pokedex.Domain");
 
             services.AddControllers();
@@ -54,14 +44,26 @@ namespace Pokedex.API
 
             services.AddMediatR(assembly);
             services.AddScoped<IPokemonExternalService, PokemonExternalService>();
-            services.AddScoped<ITypeExternalService, TypeExternalService>();
-            services.AddScoped<IPokemonTypeExternalService, PokemonTypeExternalService>();
-            services.AddScoped<IPokemonService, PokemonService>();
-            services.AddScoped<ITypeService, TypeService>();
-            services.AddScoped<IPokemonTypeService, PokemonTypeService>();
+            services.AddScoped<IPokemonRepository, PokemonRepository>();
 
             var pokeApiSection = Configuration.GetSection("PokeApi");
             services.Configure<AppSettings>(pokeApiSection);
+
+            var dynamoDbConfig = Configuration.GetSection("DynamoDb");
+            var runLocalDynamoDb = dynamoDbConfig.GetValue<bool>("LocalMode");
+
+            if (runLocalDynamoDb)
+            {
+                services.AddSingleton<IAmazonDynamoDB>(sp =>
+                {
+                    var clientConfig = new AmazonDynamoDBConfig { ServiceURL = dynamoDbConfig.GetValue<string>("LocalServiceUrl") };
+                    return new AmazonDynamoDBClient(clientConfig);
+                });
+            }
+            else
+            {
+                services.AddAWSService<IAmazonDynamoDB>();
+            }
 
             services.AddSingleton<ITracer>(serviceProvider =>  
             {  

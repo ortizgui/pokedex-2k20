@@ -1,16 +1,15 @@
 using System;
 
-namespace Pokedex.Domain.Entities
+namespace Pokedex.Domain.Dtos.Repository
 {
-    public class PokemonEntity
+    public class UpdatePokemonRepositoryDto
     {
-        public int Id { get; set; }
         public int Number { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
         public int Height { get; set; }
         public int Weight { get; set; }
-        public DateTime DateCreated { get; set; } = DateTime.Now;
-        public DateTime? DateUpdated { get; set; } = null;
+        public DateTime DateCreated { get; set; }
+        //public List<string> Types { get; set; }
     }
 }

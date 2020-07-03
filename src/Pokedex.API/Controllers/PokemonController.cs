@@ -16,8 +16,15 @@ namespace Pokedex.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{Number}")]
+        [HttpGet("number/{Number}")]
         public async Task<IActionResult> GetPokemonByNumber([FromRoute]PokemonGetByNumberCommand command)
+        {
+            var serviceResponse = await _mediator.Send(command);
+            return Ok(serviceResponse);
+        }
+        
+        [HttpDelete("{Number}")]
+        public async Task<IActionResult> DeletePokemonByNumber([FromRoute]PokemonDeleteCommand command)
         {
             var serviceResponse = await _mediator.Send(command);
             return Ok(serviceResponse);

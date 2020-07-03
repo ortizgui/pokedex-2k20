@@ -1,53 +1,41 @@
+using System;
 using System.Threading.Tasks;
 using Pokedex.Domain.ExternalServices;
 using Mapster;
 using Pokedex.Domain.Dtos.Pokemon;
-using Pokedex.Domain.Services.TypeServices;
+using Pokedex.Domain.Repositories;
 
 namespace Pokedex.Domain.Services.PokemonServices
 {
     public class PokemonService : IPokemonService
     {
         private readonly IPokemonExternalService _pokemonExternalService;
-        private readonly ITypeService _typeService;
-
+        private readonly IPokemonRepository _pokemonRepository;
         public PokemonService(IPokemonExternalService pokemonExternalService,
-                                ITypeService typeService)
+                                IPokemonRepository pokemonRepository)
         {
             _pokemonExternalService = pokemonExternalService;
-            _typeService = typeService;
-
-            TypeAdapterConfig<GetPokemonDto, AddPokemonDto>
-                .NewConfig()
-                .Map(dest => dest.Number, src => src.Id)
-                .Ignore(dest => dest.Id);
+            _pokemonRepository = pokemonRepository;
         }
 
         public async Task<GetPokemonDto> BuildPokemonByNumber(int pokemonNumber)
         {
-            GetPokemonDto registeredPokemon;
+            GetPokemonDto pokemonDto;
+                
+            pokemonDto = await _pokemonRepository.GetPokemonByNumber(pokemonNumber);
 
-            registeredPokemon = await _pokemonExternalService.GetPokemonByNumberDb(pokemonNumber);
-
-            if (registeredPokemon == null)
+            if (String.IsNullOrEmpty(pokemonDto.Name))
             {
-                var pokemonApi = await _pokemonExternalService.GetPokemonByNumberApi(pokemonNumber);
-
-                registeredPokemon = await _pokemonExternalService.GetPokemonByNumberDb(await AddPokemon(pokemonApi.Adapt<AddPokemonDto>()));
+                pokemonDto = await _pokemonExternalService.GetPokemonByNumber(pokemonNumber);
+                await AddPokemon(pokemonDto.Adapt<AddPokemonDto>());
             }
 
-            registeredPokemon.Types = await _typeService.GetTypesByPokemonId(registeredPokemon.Id);
-
-            return registeredPokemon;
+            return pokemonDto;
         }
 
-        private async Task<int> AddPokemon(AddPokemonDto newPokemonDto)
+        private async Task AddPokemon(AddPokemonDto newPokemonDto)
         {
-            var pokemonDb = await _pokemonExternalService.AddPokemonDb(newPokemonDto);
-
-            await _typeService.AddTypes(newPokemonDto.Types, pokemonDb.Id);
-
-            return pokemonDb.Number;
+            await _pokemonRepository.InsertPokemonAsync(newPokemonDto);
         }
     }
 }
