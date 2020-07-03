@@ -22,5 +22,12 @@ namespace Pokedex.API.Controllers
             var serviceResponse = await _mediator.Send(command);
             return Ok(serviceResponse);
         }
+        
+        [HttpDelete("{Number}")]
+        public async Task<IActionResult> DeletePokemonByNumber([FromRoute]PokemonDeleteCommand command)
+        {
+            var serviceResponse = await _mediator.Send(command);
+            return Ok(serviceResponse);
+        }
     }
 }
