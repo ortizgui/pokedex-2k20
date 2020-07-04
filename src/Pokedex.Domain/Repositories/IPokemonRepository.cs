@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Pokedex.Domain.Dtos.Pokemon;
 using Pokedex.Domain.Dtos.Repository;
 using Pokedex.Domain.Entities;
 

@@ -6,7 +6,6 @@ namespace Pokedex.Domain.Commands
 {
     public class PokemonPutCommand : IRequest<ServiceResponse<GetPokemonDto>>
     {
-        
         public int Number { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }

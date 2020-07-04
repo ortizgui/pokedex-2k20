@@ -1,13 +1,10 @@
 ﻿using System;
-using Pokedex.Domain.Commands;
-using Pokedex.Domain.Entities;
-using MediatR;
-using System.Threading.Tasks;
 using System.Threading;
-using Mapster;
+using System.Threading.Tasks;
+using MediatR;
+using Pokedex.Domain.Commands;
 using Pokedex.Domain.Dtos.Pokemon;
-using Pokedex.Domain.Dtos.Repository;
-using Pokedex.Domain.ExternalServices;
+using Pokedex.Domain.Entities;
 using Pokedex.Domain.Repositories;
 
 namespace Pokedex.Domain.Handler
@@ -21,18 +18,19 @@ namespace Pokedex.Domain.Handler
             _pokemonRepository = pokemonRepository;
         }
 
-        public async Task<ServiceResponse<GetPokemonDto>> Handle(PokemonDeleteCommand request, CancellationToken cancellationToken)
-        { 
-            ServiceResponse<GetPokemonDto> serviceResponse = new ServiceResponse<GetPokemonDto>();
+        public async Task<ServiceResponse<GetPokemonDto>> Handle(PokemonDeleteCommand request,
+            CancellationToken cancellationToken)
+        {
+            var serviceResponse = new ServiceResponse<GetPokemonDto>();
 
             try
             {
                 var pokemonDto = await _pokemonRepository.GetPokemon(EnumPokemonSelectOptions.Number,
-                                                                        request.Number.ToString());
+                    request.Number.ToString());
 
-                if (String.IsNullOrEmpty(pokemonDto.Name))
+                if (string.IsNullOrEmpty(pokemonDto.Name))
                     throw new ArgumentException();
-                
+
                 await _pokemonRepository.DeletePokemon(request.Number);
                 serviceResponse.Message = $"Pokemon: {pokemonDto.Name}, has been removed.";
             }

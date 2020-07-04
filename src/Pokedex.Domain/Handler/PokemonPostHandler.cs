@@ -1,13 +1,11 @@
-﻿using System;
-using Pokedex.Domain.Commands;
-using Pokedex.Domain.Entities;
-using MediatR;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Threading;
 using Mapster;
+using MediatR;
+using Pokedex.Domain.Commands;
 using Pokedex.Domain.Dtos.Pokemon;
 using Pokedex.Domain.Dtos.Repository;
-using Pokedex.Domain.ExternalServices;
+using Pokedex.Domain.Entities;
 using Pokedex.Domain.Repositories;
 
 namespace Pokedex.Domain.Handler
@@ -21,11 +19,13 @@ namespace Pokedex.Domain.Handler
             _pokemonRepository = pokemonRepository;
         }
 
-        public async Task<ServiceResponse<GetPokemonDto>> Handle(PokemonPostCommand request, CancellationToken cancellationToken)
-        { 
+        public async Task<ServiceResponse<GetPokemonDto>> Handle(PokemonPostCommand request,
+            CancellationToken cancellationToken)
+        {
             var serviceResponse = new ServiceResponse<GetPokemonDto>();
 
-            var pokemon = await _pokemonRepository.GetPokemon(EnumPokemonSelectOptions.Number, request.Number.ToString());
+            var pokemon =
+                await _pokemonRepository.GetPokemon(EnumPokemonSelectOptions.Number, request.Number.ToString());
 
             if (pokemon != null)
             {
@@ -34,9 +34,9 @@ namespace Pokedex.Domain.Handler
 
                 return serviceResponse;
             }
-            
+
             await _pokemonRepository.SavePokemon(request.Adapt<SavePokemonRepositoryDto>());
-            
+
             serviceResponse.Data = request.Adapt<GetPokemonDto>();
 
             serviceResponse.Message = $"Pokémon: {request.Name} has been added successfully.";
