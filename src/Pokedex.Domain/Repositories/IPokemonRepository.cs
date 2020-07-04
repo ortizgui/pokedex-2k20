@@ -7,8 +7,8 @@ namespace Pokedex.Domain.Repositories
 {
     public interface IPokemonRepository
     {
-        Task<GetPokemonDto> GetPokemon(EnumPokemonSelectOptions selectOption, string pokemonIdentity);
-        Task SavePokemon(AddPokemonRepositoryDto pokemonRepositoryDto);
+        Task<GetPokemonRepositoryDto> GetPokemon(EnumPokemonSelectOptions selectOption, string pokemonIdentity);
+        Task SavePokemon(SavePokemonRepositoryDto savePokemon);
         Task DeletePokemon(int pokemonId);
     }
 }

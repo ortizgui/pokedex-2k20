@@ -14,13 +14,10 @@ namespace Pokedex.Domain.Handler
 {
     public class PokemonDeleteHandler : IRequestHandler<PokemonDeleteCommand, ServiceResponse<GetPokemonDto>>
     {
-        private readonly IPokemonExternalService _pokemonExternalService;
         private readonly IPokemonRepository _pokemonRepository;
 
-        public PokemonDeleteHandler(IPokemonExternalService pokemonExternalService,
-                                        IPokemonRepository pokemonRepository)
+        public PokemonDeleteHandler(IPokemonRepository pokemonRepository)
         {
-            _pokemonExternalService = pokemonExternalService;
             _pokemonRepository = pokemonRepository;
         }
 

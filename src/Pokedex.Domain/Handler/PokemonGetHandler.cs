@@ -12,18 +12,18 @@ using Pokedex.Domain.Repositories;
 
 namespace Pokedex.Domain.Handler
 {
-    public class PokemonGetByNumberHandler : IRequestHandler<PokemonGetByNumberCommand, ServiceResponse<GetPokemonDto>>
+    public class PokemonGetHandler : IRequestHandler<PokemonGetByNumberCommand, ServiceResponse<GetPokemonDto>>
     {
         private readonly IPokemonExternalService _pokemonExternalService;
         private readonly IPokemonRepository _pokemonRepository;
 
-        public PokemonGetByNumberHandler(IPokemonExternalService pokemonExternalService,
+        public PokemonGetHandler(IPokemonExternalService pokemonExternalService,
                                         IPokemonRepository pokemonRepository)
         {
             _pokemonExternalService = pokemonExternalService;
             _pokemonRepository = pokemonRepository;
             
-            TypeAdapterConfig<GetPokemonDto, AddPokemonRepositoryDto>
+            TypeAdapterConfig<GetPokemonDto, SavePokemonRepositoryDto>
                 .NewConfig()
                 .Ignore(dest => dest.DateCreated);
         }
@@ -32,18 +32,15 @@ namespace Pokedex.Domain.Handler
         { 
             ServiceResponse<GetPokemonDto> serviceResponse = new ServiceResponse<GetPokemonDto>();
 
-            var pokemonDto = await _pokemonRepository.GetPokemon(EnumPokemonSelectOptions.Number, request.Number.ToString());
+            var pokemonRepositoryDto = await _pokemonRepository.GetPokemon(EnumPokemonSelectOptions.Number, request.Number.ToString());
 
-            if (String.IsNullOrEmpty(pokemonDto.Name))
-                pokemonDto = await GetPokemonInfoApi(request.Number);
-
-            serviceResponse.Data = pokemonDto;
-
-            if (pokemonDto == null)
+            if (pokemonRepositoryDto == null)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Sorry, we can't find any info about that pokemon.";
             }
+            
+            serviceResponse.Data = pokemonRepositoryDto.Adapt<GetPokemonDto>();
 
             return serviceResponse;
         }
@@ -56,7 +53,7 @@ namespace Pokedex.Domain.Handler
             {
                 pokemonDto = await _pokemonExternalService.GetPokemonByNumber(pokemonNumber);
                 if (!String.IsNullOrEmpty(pokemonDto.Name))
-                    await _pokemonRepository.SavePokemon(pokemonDto.Adapt<AddPokemonRepositoryDto>());
+                    await _pokemonRepository.SavePokemon(pokemonDto.Adapt<SavePokemonRepositoryDto>());
             }
             catch (Exception e)
             {

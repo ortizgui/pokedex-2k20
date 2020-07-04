@@ -32,7 +32,7 @@ namespace Pokedex.Infrastructure.Repositories
             await _amazonDynamoDb.DeleteItemAsync(request);
         }
 
-        public async Task<GetPokemonDto> GetPokemon(EnumPokemonSelectOptions selectOption, string pokemonIdentity)
+        public async Task<GetPokemonRepositoryDto> GetPokemon(EnumPokemonSelectOptions selectOption, string pokemonIdentity)
         {
             var request = new GetItemRequest
             {
@@ -43,33 +43,35 @@ namespace Pokedex.Infrastructure.Repositories
             var response = await _amazonDynamoDb.GetItemAsync(request);
             
             if (!response.IsItemSet)
-                return new GetPokemonDto();
+                return null;
             
-            var pokemonDto = new GetPokemonDto()
+            var pokemonDto = new GetPokemonRepositoryDto()
             {
                Number = Convert.ToInt16(response.Item["Number"].N),
                Name = response.Item["Name"].S,
                Order = Convert.ToInt16(response.Item["Order"].N),
                Height = Convert.ToInt16(response.Item["Height"].N),
                Weight = Convert.ToInt16(response.Item["Weight"].N),
+               DateCreated = Convert.ToDateTime(response.Item["DateCreated"].S)
             };
             
             return pokemonDto;
         }
 
-        public async Task SavePokemon(AddPokemonRepositoryDto pokemonRepositoryDto)
+        public async Task SavePokemon(SavePokemonRepositoryDto savePokemon)
         {
             var request = new PutItemRequest
             {
                 TableName = _tableName,
                 Item = new Dictionary<string, AttributeValue>
                 {
-                    { "Number", new AttributeValue { N = pokemonRepositoryDto.Number.ToString() }},
-                    { "Name", new AttributeValue { S = pokemonRepositoryDto.Name }},
-                    { "Order", new AttributeValue { N = pokemonRepositoryDto.Order.ToString() }},
-                    { "Height", new AttributeValue { N = pokemonRepositoryDto.Height.ToString() }},
-                    { "Weight", new AttributeValue { N = pokemonRepositoryDto.Weight.ToString() }},
-                    { "DateCreated", new AttributeValue { S = pokemonRepositoryDto.DateCreated.ToString() }},
+                    { "Number", new AttributeValue { N = savePokemon.Number.ToString() }},
+                    { "Name", new AttributeValue { S = savePokemon.Name }},
+                    { "Order", new AttributeValue { N = savePokemon.Order.ToString() }},
+                    { "Height", new AttributeValue { N = savePokemon.Height.ToString() }},
+                    { "Weight", new AttributeValue { N = savePokemon.Weight.ToString() }},
+                    { "DateCreated", new AttributeValue { S = savePokemon.DateCreated.ToString() }},
+                    { "DateUpdated", new AttributeValue { S = savePokemon.DateUpdated.ToString() }},
                 }
             };
 
