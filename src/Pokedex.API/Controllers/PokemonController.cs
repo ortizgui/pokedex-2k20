@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Pokedex.Domain.Commands;
 
 namespace Pokedex.API.Controllers
@@ -17,28 +17,28 @@ namespace Pokedex.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostPokemon([FromBody]PokemonPostCommand command)
+        public async Task<IActionResult> PostPokemon([FromBody] PokemonPostCommand command)
         {
             var serviceResponse = await _mediator.Send(command);
             return Ok(serviceResponse);
         }
-        
+
         [HttpGet("{Number}")]
-        public async Task<IActionResult> GetPokemonByNumber([FromRoute]PokemonGetByNumberCommand command)
+        public async Task<IActionResult> GetPokemonByNumber([FromRoute] PokemonGetByNumberCommand command)
         {
             var serviceResponse = await _mediator.Send(command);
             return Ok(serviceResponse);
         }
-        
+
         [HttpPut]
-        public async Task<IActionResult> PutPokemon([FromBody]PokemonPutCommand command)
+        public async Task<IActionResult> PutPokemon([FromBody] PokemonPutCommand command)
         {
             var serviceResponse = await _mediator.Send(command);
             return Ok(serviceResponse);
         }
-        
+
         [HttpDelete("{Number}")]
-        public async Task<IActionResult> DeletePokemonByNumber([FromRoute]PokemonDeleteCommand command)
+        public async Task<IActionResult> DeletePokemonByNumber([FromRoute] PokemonDeleteCommand command)
         {
             var serviceResponse = await _mediator.Send(command);
             return Ok(serviceResponse);

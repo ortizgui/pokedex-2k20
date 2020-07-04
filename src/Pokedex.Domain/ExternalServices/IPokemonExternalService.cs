@@ -1,5 +1,5 @@
-﻿using Pokedex.Domain.Dtos.Pokemon;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Pokedex.Domain.Dtos.Pokemon;
 
 namespace Pokedex.Domain.ExternalServices
 {
