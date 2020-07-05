@@ -24,7 +24,7 @@ namespace Pokedex.API.Controllers
         }
 
         [HttpGet("{Number}")]
-        public async Task<IActionResult> GetPokemonByNumber([FromRoute] PokemonGetByNumberCommand command)
+        public async Task<IActionResult> GetPokemonByNumber([FromRoute] PokemonGetCommand command)
         {
             var serviceResponse = await _mediator.Send(command);
             return Ok(serviceResponse);
