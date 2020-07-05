@@ -12,15 +12,12 @@ using Pokedex.Domain.Repositories;
 
 namespace Pokedex.Domain.Handler
 {
-    public class PokemonGetHandler : IRequestHandler<PokemonGetByNumberCommand, ServiceResponse<GetPokemonDto>>
+    public class PokemonGetHandler : IRequestHandler<PokemonGetCommand, ServiceResponse<GetPokemonDto>>
     {
-        private readonly IPokemonExternalService _pokemonExternalService;
         private readonly IPokemonRepository _pokemonRepository;
 
-        public PokemonGetHandler(IPokemonExternalService pokemonExternalService,
-            IPokemonRepository pokemonRepository)
+        public PokemonGetHandler(IPokemonRepository pokemonRepository)
         {
-            _pokemonExternalService = pokemonExternalService;
             _pokemonRepository = pokemonRepository;
 
             TypeAdapterConfig<GetPokemonDto, SavePokemonRepositoryDto>
@@ -28,7 +25,7 @@ namespace Pokedex.Domain.Handler
                 .Ignore(dest => dest.DateCreated);
         }
 
-        public async Task<ServiceResponse<GetPokemonDto>> Handle(PokemonGetByNumberCommand request,
+        public async Task<ServiceResponse<GetPokemonDto>> Handle(PokemonGetCommand request,
             CancellationToken cancellationToken)
         {
             var serviceResponse = new ServiceResponse<GetPokemonDto>();
@@ -45,24 +42,6 @@ namespace Pokedex.Domain.Handler
             serviceResponse.Data = pokemonRepositoryDto.Adapt<GetPokemonDto>();
 
             return serviceResponse;
-        }
-
-        private async Task<GetPokemonDto> GetPokemonInfoApi(int pokemonNumber)
-        {
-            GetPokemonDto pokemonDto;
-
-            try
-            {
-                pokemonDto = await _pokemonExternalService.GetPokemonByNumber(pokemonNumber);
-                if (!string.IsNullOrEmpty(pokemonDto.Name))
-                    await _pokemonRepository.SavePokemon(pokemonDto.Adapt<SavePokemonRepositoryDto>());
-            }
-            catch (Exception e)
-            {
-                pokemonDto = null;
-            }
-
-            return pokemonDto;
         }
     }
 }
