@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -14,75 +15,40 @@ namespace Pokedex.Test.unit.Domain.Handler
     public class PokemonGetHandlerTests
     {
         private Mock<IPokemonRepository> _mockPokemonRepository;
-        //private PokemonGetHandler _handler;
 
         [Fact]
-        public async void GetPokemon_FindOne_ReturnIsTrue()
+        public async void Should_Find_Return_Is_Valid()
         {
-            //Arrange
-            var handleExpectedResponse = new ServiceResponse<GetPokemonDto>()
-            {
-                Data = new GetPokemonDto
-                {
-                    Name = "bulbasaur",
-                    Number = 1,
-                    Order = 1,
-                    Height = 7,
-                    Weight = 69
-                },
-                Success = true,
-                Message = null
-            };
-
-            var getPokemonRepositoryDto = new GetPokemonRepositoryDto()
-            {
-                Name = "bulbasaur",
-                Number = 1,
-                Order = 1,
-                Height = 7,
-                Weight = 69
-            };
-
             _mockPokemonRepository = new Mock<IPokemonRepository>();
 
             _mockPokemonRepository.Setup(p => p.GetPokemon(It.IsAny<EnumPokemonSelectOptions>(),
-                It.IsAny<string>())).Returns(Task.FromResult(getPokemonRepositoryDto));
+                It.IsAny<string>())).Returns(Task.FromResult(new GetPokemonRepositoryDto()));
 
             var _handler = new PokemonGetHandler(_mockPokemonRepository.Object);
 
             //Act
-            var response = await _handler.Handle(new PokemonGetCommand(){ Number = 1 }, new CancellationToken());
+            var response = await _handler.Handle(new PokemonGetCommand(), new CancellationToken());
 
             //Assert
-            Assert.True(response.Data.Name.Equals(handleExpectedResponse.Data.Name));
-            Assert.True(response.Data.Number.Equals(handleExpectedResponse.Data.Number));
+            _mockPokemonRepository.VerifyAll();
         }
         
         [Fact]
-        public async void GetPokemon_DontFindOne_ReturnIsFalse()
+        public async void Should_Return_Try_Again_Later()
         {
             //Arrange
-            var handleExpectedResponse = new ServiceResponse<GetPokemonDto>()
-            {
-                Data = null,
-                Success = true,
-                Message = null
-            };
-
             _mockPokemonRepository = new Mock<IPokemonRepository>();
 
             _mockPokemonRepository.Setup(p => p.GetPokemon(It.IsAny<EnumPokemonSelectOptions>(),
-                It.IsAny<string>())).Returns(Task.FromResult<GetPokemonRepositoryDto>(null));
+                It.IsAny<string>())).Throws(new Exception());
 
             var _handler = new PokemonGetHandler(_mockPokemonRepository.Object);
 
             //Act
-            var response = await _handler.Handle(new PokemonGetCommand(){ Number = 1 }, new CancellationToken());
+            var response = await _handler.Handle(new PokemonGetCommand(), new CancellationToken());
 
             //Assert
-            Assert.Null(response.Data);
-            Assert.False(response.Success);
-            Assert.True(response.Message.Equals("Sorry, we can't find any info about that pokemon."));
+            Assert.Equal("Please try again later.", response.Message);
         }
     }
 }

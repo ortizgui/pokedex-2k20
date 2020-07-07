@@ -30,16 +30,23 @@ namespace Pokedex.Domain.Handler
         {
             var serviceResponse = new ServiceResponse<GetPokemonDto>();
 
-            var pokemonRepositoryDto =
-                await _pokemonRepository.GetPokemon(EnumPokemonSelectOptions.Number, request.Number.ToString());
-
-            if (pokemonRepositoryDto == null)
+            try
             {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "Sorry, we can't find any info about that pokemon.";
-            }
+                var pokemonRepositoryDto =
+                    await _pokemonRepository.GetPokemon(EnumPokemonSelectOptions.Number, request.Number.ToString());
 
-            serviceResponse.Data = pokemonRepositoryDto.Adapt<GetPokemonDto>();
+                if (pokemonRepositoryDto == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Sorry, we can't find any info about that pokemon.";
+                }
+
+                serviceResponse.Data = pokemonRepositoryDto.Adapt<GetPokemonDto>();
+            }
+            catch (Exception e)
+            {
+                serviceResponse.Message = "Please try again later.";
+            }
 
             return serviceResponse;
         }
